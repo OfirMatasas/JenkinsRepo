@@ -1,18 +1,25 @@
 pipeline {
     agent any
     stages {
-        stage('Build') {
-            steps {
-                echo 'Installing dependencies..'
-                sh 'python3 -m pip install pytest'
-            }
-        }
-        stage('Test') {
-            steps {
-                echo 'Testing..'
-                sh 'pytest test_add.py'
+        stage('Test and Sleep') {
+            parallel {
+                stage('Test') {
+                    steps {
+                        echo 'Testing..'
+                        sh 'python3 -m pytest test_add.py'
+                    }
+                }
+                stage('Sleep and Count') {
+                    steps {
+                        script {
+                            for (int i = 1; i <= 10; i++) {
+                                echo "Sleeping... Count ${i}"
+                                sh 'sleep 1'
+                            }
+                        }
+                    }
+                }
             }
         }
     }
 }
-```
